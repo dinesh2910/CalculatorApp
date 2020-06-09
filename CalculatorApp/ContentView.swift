@@ -10,12 +10,56 @@ import SwiftUI
 
 struct ContentView: View {
     
-    let calButtons = [
-        ["AC", "+_","%","%"],
-        ["7", "8","9","X"],
-        ["4", "5","5","-"],
-        ["1", "2","3","+"],
-        ["0", ".",".","="]
+    enum CalculatorButtons: String {
+        
+        case zero, one, two, three, four, five, six, seven, eight, nine, dot
+        case ac, plusMinus, percent
+        case equals, minus, plus, multiply, divide
+        
+        var title: String {
+            switch self {
+            case .one: return "1"
+            case .two: return "2"
+            case .three: return "3"
+            case .four: return "4"
+            case .five: return "5"
+            case .six: return "6"
+            case .seven: return "7"
+            case .eight: return "8"
+            case .nine: return "9"
+            case .plus: return "+"
+            case .minus: return "-"
+            case .multiply: return "X"
+            case .divide: return "÷"
+            case .percent: return "%"
+            case .equals: return "="
+            case .zero: return "0"
+            case .plusMinus: return "+/-"
+            case .dot: return "."
+            default:
+                return "AC"
+            }
+        }
+        
+        var buttonBackgroundColor: Color {
+            switch self {
+            case .divide, .minus, .plus, .equals, .multiply:
+                return Color(.orange)
+            case .ac, .percent, .plusMinus:
+                return Color(.lightGray)
+            default:
+                return Color(.darkGray)
+            }
+        }
+    }
+    
+    let calButtons: [[CalculatorButtons]] = [
+        [.ac, .plusMinus, .percent, .divide],
+        [.seven, .eight, .nine, .multiply],
+        [.four, .five, .six, .plus],
+        [.one, .two, .three, .minus],
+        [.zero, .dot, .equals]
+        
     ]
     var body: some View {
         
@@ -32,13 +76,18 @@ struct ContentView: View {
                 ForEach(calButtons, id: \.self) { row in
                     HStack (spacing: 12) {
                         ForEach(row, id: \.self) { button in
-                            Text(button)
+                            
+                            Button(action: {
+                                
+                            }) {
+                                Text(button.title)
                                 .font(.system(size: 32))
                                 .fontWeight(.medium)
                                 .foregroundColor(.white)
-                                .frame(width: self.buttonWidth(), height: self.buttonWidth())
-                                .background(Color.gray)
-                                .cornerRadius(self.buttonWidth())
+                                .frame(width: self.buttonWidth(button: button), height: (UIScreen.main.bounds.width - 5 * 12) / 4)
+                                .background(button.buttonBackgroundColor)
+                                .cornerRadius(self.buttonWidth(button: button))
+                            }
                         }
                     }
                 }
@@ -46,7 +95,10 @@ struct ContentView: View {
         }
     }
     
-    func buttonWidth() -> CGFloat {
+    func buttonWidth(button: CalculatorButtons) -> CGFloat {
+        if button == .zero {
+            return (UIScreen.main.bounds.width - 4 * 12) / 4 * 2
+        }
         return (UIScreen.main.bounds.width - 5 * 12) / 4
     }
 }
